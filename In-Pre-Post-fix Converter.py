@@ -89,6 +89,7 @@ def ifValid(expression):
     return True
   return False
 
+
 class Infix:
     def __init__(self, expression:str):
         self.expression = expression
@@ -101,40 +102,43 @@ class Infix:
         stack = Stack()
         result = ""
         
-        for i in range(len(expression)):
-            if isOperand(expression[i]):
-                result += expression[i]
+        try:
+            for i in range(len(expression)):
+                if isOperand(expression[i]):
+                    result += expression[i]
 
-            elif isOperator(expression[i]):
-                if stack.isEmpty():
-                    stack.push(expression[i])
+                elif isOperator(expression[i]):
+                    if stack.isEmpty():
+                        stack.push(expression[i])
+                    
+                    elif hasHigherPrecedence(expression[i], stack.top()):
+                        stack.push(expression[i])
+
+                    elif hasHigherPrecedence(stack.top(), expression[i]):
+                        result += stack.top()
+                        stack.pop()
+                        stack.push(expression[i])
+
+                    else:
+                        stack.push(expression[i])
+
+                elif expression[i] == '(':
+                    stack.push(expression[i]) 
+
+                elif expression[i] == ')':
+                    while not stack.isEmpty() and stack.top() != '(':
+                        result += stack.top()
+                        stack.pop()
+                    stack.pop() # pops the opening parenthesis
                 
-                elif hasHigherPrecedence(expression[i], stack.top()):
-                    stack.push(expression[i])
+            while not stack.isEmpty():
+                result += stack.top()
+                stack.pop()
 
-                elif hasHigherPrecedence(stack.top(), expression[i]):
-                    result += stack.top()
-                    stack.pop()
-                    stack.push(expression[i])
+            return reverse(result)
 
-                else:
-                    stack.push(expression[i])
-
-            elif expression[i] == '(':
-                stack.push(expression[i]) 
-
-            elif expression[i] == ')':
-                while not stack.isEmpty() and stack.top() != '(':
-                    result += stack.top()
-                    stack.pop()
-                stack.pop() # pops the opening parenthesis
-            
-        while not stack.isEmpty():
-            result += stack.top()
-            stack.pop()
-
-        return reverse(result)
-
+        except:
+            return 'Error! The expression you entered is not acceptable. Please try again.'  
 
     def toPostfix(self):
         expression = self.expression
@@ -144,31 +148,35 @@ class Infix:
         stack = Stack()
         result = ""
 
-        for i in range(len(expression)): 
-            if isOperand(expression[i]): 
-                result += expression[i]
+        try:
+            for i in range(len(expression)): 
+                if isOperand(expression[i]): 
+                    result += expression[i]
 
-            elif isOperator(expression[i]):
-                while not stack.isEmpty() and hasHigherPrecedence(stack.top(), expression[i]) and stack.top() != '(':
-                    result += stack.top()
-                    stack.pop()
-                
-                stack.push(expression[i])
+                elif isOperator(expression[i]):
+                    while not stack.isEmpty() and hasHigherPrecedence(stack.top(), expression[i]) and stack.top() != '(':
+                        result += stack.top()
+                        stack.pop()
+                    
+                    stack.push(expression[i])
 
-            elif expression[i] == '(':
-                stack.push(expression[i]) 
+                elif expression[i] == '(':
+                    stack.push(expression[i]) 
 
-            elif expression[i] == ')':
-                while not stack.isEmpty() and stack.top() != '(':
-                    result += stack.top()
-                    stack.pop()
-                stack.pop() # pops the opening parenthesis
+                elif expression[i] == ')':
+                    while not stack.isEmpty() and stack.top() != '(':
+                        result += stack.top()
+                        stack.pop()
+                    stack.pop() # pops the opening parenthesis
 
-        while not stack.isEmpty():
-            result += stack.top()
-            stack.pop()
-        
-        return result
+            while not stack.isEmpty():
+                result += stack.top()
+                stack.pop()
+            
+            return result
+
+        except:
+            return 'Error! The expression you entered is not acceptable. Please try again.'  
 
         
 class Prefix:
@@ -180,46 +188,54 @@ class Prefix:
         stack = Stack()
         result = ""
 
-        for i in range(len(expression)):
-            if isOperand(expression[i]):
-                stack.push(expression[i])
+        try:
+            for i in range(len(expression)):
+                if isOperand(expression[i]):
+                    stack.push(expression[i])
 
-            elif isOperator(expression[i]):
-                op1 = stack.top()
+                elif isOperator(expression[i]):
+                    op1 = stack.top()
+                    stack.pop()
+                    op2 = stack.top()
+                    stack.pop()
+                    exp = f"({op1}{expression[i]}{op2})"
+                    stack.push(exp)
+                
+            while not stack.isEmpty():
+                result += stack.top()
                 stack.pop()
-                op2 = stack.top()
-                stack.pop()
-                exp = f"({op1}{expression[i]}{op2})"
-                stack.push(exp)
-            
-        while not stack.isEmpty():
-            result += stack.top()
-            stack.pop()
 
-        return result
+            return result
+        
+        except:
+            return 'Error! The expression you entered is not acceptable. Please try again.' 
 
     def toPostfix(self):
         expression = reverse(self.expression)
         stack = Stack()
         result = ""
 
-        for i in range(len(expression)):
-            if isOperand(expression[i]):
-                stack.push(expression[i])
+        try:
+            for i in range(len(expression)):
+                if isOperand(expression[i]):
+                    stack.push(expression[i])
 
-            elif isOperator(expression[i]):
-                op1 = stack.top()
+                elif isOperator(expression[i]):
+                    op1 = stack.top()
+                    stack.pop()
+                    op2 = stack.top()
+                    stack.pop()
+                    exp = f"{op1}{op2}{expression[i]}"
+                    stack.push(exp)
+                
+            while not stack.isEmpty():
+                result += stack.top()
                 stack.pop()
-                op2 = stack.top()
-                stack.pop()
-                exp = f"{op1}{op2}{expression[i]}"
-                stack.push(exp)
-            
-        while not stack.isEmpty():
-            result += stack.top()
-            stack.pop()
 
-        return result
+            return result
+        
+        except:
+            return 'Error! The expression you entered is not acceptable. Please try again.' 
 
 
 class Postfix:
@@ -231,50 +247,57 @@ class Postfix:
         stack = Stack() # creates a stack
         result = ""
 
-        for i in range(len(expression)): 
-            if isOperand(expression[i]): 
-                stack.push(expression[i])
+        try:
+            for i in range(len(expression)): 
+                if isOperand(expression[i]): 
+                    stack.push(expression[i])
 
-            elif isOperator(expression[i]):
-                op1 = stack.top()
-                stack.pop()
-                op2 = stack.top()
-                stack.pop()
-                exp = f"({op2}{expression[i]}{op1})"
-                stack.push(exp)
+                elif isOperator(expression[i]):
+                    op1 = stack.top()
+                    stack.pop()
+                    op2 = stack.top()
+                    stack.pop()
+                    exp = f"({op2}{expression[i]}{op1})"
+                    stack.push(exp)
 
-        while not stack.isEmpty():
-            result += stack.top()
-            stack.pop()
-        
-        return result
+            while not stack.isEmpty():
+                result += stack.top()
+                stack.pop()
+            
+            return result
+
+        except:
+            return 'Error! The expression you entered is not acceptable. Please try again.' 
 
     def toPrefix(self):
         expression = self.expression
         stack = Stack() # creates a stack
         result = ""
 
-        for i in range(len(expression)): 
-            if isOperand(expression[i]): 
-                stack.push(expression[i])
+        try:
+            for i in range(len(expression)): 
+                if isOperand(expression[i]): 
+                    stack.push(expression[i])
 
-            elif isOperator(expression[i]):
-                op1 = stack.top()
-                stack.pop()
-                op2 = stack.top()
-                stack.pop()
-                exp = f"{op1}{op2}{expression[i]}"
-                stack.push(exp)
+                elif isOperator(expression[i]):
+                    op1 = stack.top()
+                    stack.pop()
+                    op2 = stack.top()
+                    stack.pop()
+                    exp = f"{op1}{op2}{expression[i]}"
+                    stack.push(exp)
 
-        while not stack.isEmpty():
-            result += stack.top()
-            stack.pop()
-        
-        return reverse(result)
+            while not stack.isEmpty():
+                result += stack.top()
+                stack.pop()
+            
+            return reverse(result)
+
+        except:
+            return 'Error! The expression you entered is not acceptable. Please try again.' 
 
 
 def main():
-
     print("Select input expression: \n (1) Infix\n (2) Prefix\n (3) Postfix\n")
     type_expression = input("Type the number of chosen expression: ")
     # input_expression = input(f"Enter your infix expression: ")
@@ -283,7 +306,7 @@ def main():
         input_expression = input(f"Enter your infix expression: ")
         _expression = Infix(input_expression)
         print()
-        print("Infix:", input_expression)
+        print("Your Infix Input:", input_expression)
         print("Prefix:", _expression.toPrefix())
         print("Postfix:", _expression.toPostfix())
         print() 
@@ -292,7 +315,7 @@ def main():
         input_expression = input(f"Enter your prefix expression: ")
         _expression = Prefix(input_expression)
         print()
-        print("Prefix:", input_expression)
+        print("Your Prefix:", input_expression)
         print("Infix:", _expression.toInfix())
         print("Postfix:", _expression.toPostfix())
         print() 
@@ -301,7 +324,7 @@ def main():
         input_expression = input(f"Enter your postfix expression: ")
         _expression = Postfix(input_expression)
         print()
-        print("Postfix:", input_expression) 
+        print("Your Postfix Input:", input_expression) 
         print("Infix:", _expression.toInfix())
         print("Prefix:",  _expression.toPrefix()) 
         print()
@@ -310,42 +333,32 @@ def main():
         return "Invalid type of expression! Please try again! :("
 
 
-
-    # expression = input("Type in your input: ")
-    # input_expression = "6 2 3 + - 3 8 2 / + * 2 ^ 3 +"
-
-    expression = input_expression.split()
-    # print(input_expression.split())
-
-
 def test():
     type_expression = "3"
-    input_expression = "ABC+*D/"
+    input_expression = "ABC+*D/+"
 
     if type_expression == "1":
         _expression = Infix(input_expression) 
-        print("Infix:", input_expression)
+        print("Your Infix Input:", input_expression)
         print("Prefix:", _expression.toPrefix())
         print("Postfix:", _expression.toPostfix())
 
     elif type_expression == "2":
         _expression = Prefix(input_expression)
-        print("Prefix:", input_expression)
+        print("Your Prefix Input:", input_expression)
         print("Infix:", _expression.toInfix())
         print("Postfix:", _expression.toPostfix())
 
     elif type_expression == "3":
         _expression = Postfix(input_expression)
-        print("Postfix:", input_expression) 
+        print("Your Postfix Input:", input_expression) 
         print("Infix:", _expression.toInfix())
         print("Prefix:",  _expression.toPrefix())
         
-        
-    
     else:
         return "Invalid type of expression! Please try again! :("
 
 
 if __name__ == "__main__":
-    test()
-    # main()
+    # test()
+    main()
