@@ -172,14 +172,54 @@ class Infix:
 
         
 class Prefix:
-    def __init__(self):
-        pass
+    def __init__(self, expression:str):
+        self.expression = expression
     
     def toInfix(self):
-        pass
+        expression = reverse(self.expression)
+        stack = Stack()
+        result = ""
+
+        for i in range(len(expression)):
+            if isOperand(expression[i]):
+                stack.push(expression[i])
+
+            elif isOperator(expression[i]):
+                op1 = stack.top()
+                stack.pop()
+                op2 = stack.top()
+                stack.pop()
+                exp = f"{op1}{op2}{expression[i]}"
+                stack.push(exp)
+            
+        while not stack.isEmpty():
+            result += stack.top()
+            stack.pop()
+
+        return result
 
     def toPostfix(self):
-        pass
+        expression = reverse(self.expression)
+        stack = Stack()
+        result = ""
+
+        for i in range(len(expression)):
+            if isOperand(expression[i]):
+                stack.push(expression[i])
+
+            elif isOperator(expression[i]):
+                op1 = stack.top()
+                stack.pop()
+                op2 = stack.top()
+                stack.pop()
+                exp = f"{op1}{op2}{expression[i]}"
+                stack.push(exp)
+            
+        while not stack.isEmpty():
+            result += stack.top()
+            stack.pop()
+
+        return result
 
 
 class Postfix:
@@ -210,11 +250,16 @@ def main():
 
     elif type_expression == "2":
         input_expression = input(f"Enter your prefix expression: ")
-        _expression = Prefix() 
+        _expression = Prefix(input_expression)
+        print()
+        print("Prefix:", input_expression)
+        print("Infix:", _expression.toPostfix())
+        print("Postfix:", _expression.toPostfix())
+        print() 
 
     elif type_expression == "3":
         input_expression = input(f"Enter your postfix expression: ")
-        expression = Postfix() 
+        expression = Postfix(input_expression) 
     
     else:
         return "Invalid type of expression! Please try again! :("
@@ -229,8 +274,8 @@ def main():
 
 
 def test():
-    type_expression = "1"
-    input_expression = "(A+B)*(C+D)"
+    type_expression = "2"
+    input_expression = "++A*BCD"
 
     if type_expression == "1":
         _expression = Infix(input_expression) 
@@ -239,10 +284,18 @@ def test():
         print("Postfix:", _expression.toPostfix())
 
     elif type_expression == "2":
-        _expression = Prefix() 
+        _expression = Prefix(input_expression)
+        print("Prefix:", input_expression)
+        print("Infix:", _expression.toPostfix())
+        print("Postfix:", _expression.toPostfix())
 
     elif type_expression == "3":
-        expression = Postfix() 
+        expression = Postfix(input_expression)
+        print("Postfix:", input_expression) 
+        print("Infix:", _expression.toInfix())
+        print("Prefix:",  _expression.toPrefix())
+        
+        
     
     else:
         return "Invalid type of expression! Please try again! :("
