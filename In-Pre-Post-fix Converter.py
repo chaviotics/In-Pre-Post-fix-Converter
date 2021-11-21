@@ -189,7 +189,7 @@ class Prefix:
                 stack.pop()
                 op2 = stack.top()
                 stack.pop()
-                exp = f"({op1}{op2}{expression[i]})"
+                exp = f"({op1}{expression[i]}{op2})"
                 stack.push(exp)
             
         while not stack.isEmpty():
@@ -293,13 +293,18 @@ def main():
         _expression = Prefix(input_expression)
         print()
         print("Prefix:", input_expression)
-        print("Infix:", _expression.toPostfix())
+        print("Infix:", _expression.toInfix())
         print("Postfix:", _expression.toPostfix())
         print() 
 
     elif type_expression == "3":
         input_expression = input(f"Enter your postfix expression: ")
-        expression = Postfix(input_expression) 
+        _expression = Postfix(input_expression)
+        print()
+        print("Postfix:", input_expression) 
+        print("Infix:", _expression.toInfix())
+        print("Prefix:",  _expression.toPrefix()) 
+        print()
     
     else:
         return "Invalid type of expression! Please try again! :("
@@ -326,7 +331,7 @@ def test():
     elif type_expression == "2":
         _expression = Prefix(input_expression)
         print("Prefix:", input_expression)
-        print("Infix:", _expression.toPostfix())
+        print("Infix:", _expression.toInfix())
         print("Postfix:", _expression.toPostfix())
 
     elif type_expression == "3":
