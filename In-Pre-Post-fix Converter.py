@@ -223,14 +223,54 @@ class Prefix:
 
 
 class Postfix:
-    def __init__(self):
-        pass
+    def __init__(self, expression:str):
+        self.expression = expression
     
     def toInfix(self):
-        pass
+        expression = self.expression
+        stack = Stack() # creates a stack
+        result = ""
+
+        for i in range(len(expression)): 
+            if isOperand(expression[i]): 
+                stack.push(expression[i])
+
+            elif isOperator(expression[i]):
+                op1 = stack.top()
+                stack.pop()
+                op2 = stack.top()
+                stack.pop()
+                exp = f"{op2}{expression[i]}{op1}"
+                stack.push(exp)
+
+        while not stack.isEmpty():
+            result += stack.top()
+            stack.pop()
+        
+        return result
 
     def toPrefix(self):
-        pass
+        expression = self.expression
+        stack = Stack() # creates a stack
+        result = ""
+
+        for i in range(len(expression)): 
+            if isOperand(expression[i]): 
+                stack.push(expression[i])
+
+            elif isOperator(expression[i]):
+                op1 = stack.top()
+                stack.pop()
+                op2 = stack.top()
+                stack.pop()
+                exp = f"{op1}{op2}{expression[i]}"
+                stack.push(exp)
+
+        while not stack.isEmpty():
+            result += stack.top()
+            stack.pop()
+        
+        return reverse(result)
 
 
 def main():
@@ -274,8 +314,8 @@ def main():
 
 
 def test():
-    type_expression = "2"
-    input_expression = "++A*BCD"
+    type_expression = "3"
+    input_expression = "abc*def^/g*-h*+"
 
     if type_expression == "1":
         _expression = Infix(input_expression) 
@@ -290,7 +330,7 @@ def test():
         print("Postfix:", _expression.toPostfix())
 
     elif type_expression == "3":
-        expression = Postfix(input_expression)
+        _expression = Postfix(input_expression)
         print("Postfix:", input_expression) 
         print("Infix:", _expression.toInfix())
         print("Prefix:",  _expression.toPrefix())
