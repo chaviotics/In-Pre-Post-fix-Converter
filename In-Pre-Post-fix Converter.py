@@ -189,7 +189,7 @@ class Prefix:
                 stack.pop()
                 op2 = stack.top()
                 stack.pop()
-                exp = f"{op1}{op2}{expression[i]}"
+                exp = f"({op1}{op2}{expression[i]})"
                 stack.push(exp)
             
         while not stack.isEmpty():
@@ -240,7 +240,7 @@ class Postfix:
                 stack.pop()
                 op2 = stack.top()
                 stack.pop()
-                exp = f"{op2}{expression[i]}{op1}"
+                exp = f"({op2}{expression[i]}{op1})"
                 stack.push(exp)
 
         while not stack.isEmpty():
@@ -315,7 +315,7 @@ def main():
 
 def test():
     type_expression = "3"
-    input_expression = "abc*def^/g*-h*+"
+    input_expression = "ABC+*D/"
 
     if type_expression == "1":
         _expression = Infix(input_expression) 
